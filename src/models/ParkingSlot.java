@@ -1,4 +1,4 @@
-package model;
+package models;
 
 public class ParkingSlot extends BaseModel{
     private Vehicle vehicle;

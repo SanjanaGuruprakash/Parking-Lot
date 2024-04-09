@@ -1,8 +1,8 @@
-package model;
+package models;
 
 
-import LLD3.ParkingLot.strategies.AllotmentStrategy;
-import LLD3.ParkingLot.strategies.BillingStrategy;
+import strategies.AllotmentStrategy;
+import strategies.BillingStrategy;
 
 import java.util.List;
 
@@ -10,6 +10,22 @@ public class ParkingLot extends BaseModel{
     private List<ParkingFloor> floors;
     private List<Gate> gates;
     private ParkingLotStatus lotStatus;
+
+    public AllotmentStrategy getAllotmentStrategy() {
+        return allotmentStrategy;
+    }
+
+    public void setAllotmentStrategy(AllotmentStrategy allotmentStrategy) {
+        this.allotmentStrategy = allotmentStrategy;
+    }
+
+    public BillingStrategy getBillingStrategy() {
+        return billingStrategy;
+    }
+
+    public void setBillingStrategy(BillingStrategy billingStrategy) {
+        this.billingStrategy = billingStrategy;
+    }
 
     private AllotmentStrategy allotmentStrategy;
     private BillingStrategy billingStrategy;

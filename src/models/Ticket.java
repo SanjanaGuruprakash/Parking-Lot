@@ -1,30 +1,32 @@
-package model;
+package models;
 
 
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Ticket extends BaseModel{
-    private int number;
-    private LocalDateTime entryTime;
+    private String number;
+    private Date entryTime;
     private Vehicle vehicle;
     private ParkingSlot parkingSlot;
     private Gate entryGate;
     private Operator operator;
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
-    public LocalDateTime getEntryTime() {
+    public Date getEntryTime() {
         return entryTime;
     }
 
-    public void setEntryTime(LocalDateTime entryTime) {
+    public void setEntryTime(Date entryTime) {
         this.entryTime = entryTime;
     }
 
