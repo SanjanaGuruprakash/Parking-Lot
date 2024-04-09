@@ -16,6 +16,9 @@ public class TicketController {
     private static final String PARKING_LOT_FULL = "Parking Lot is Full, please find parking space on the road";
     private TicketService ticketService;
 
+    public TicketController(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
 
     public IssueTicketResponse issueTicket(IssueTicketRequest ticketRequest){
 

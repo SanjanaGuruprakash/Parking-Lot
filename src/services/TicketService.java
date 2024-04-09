@@ -22,7 +22,18 @@ public class TicketService {
     private ParkingLotRepository parkingLotRepository;
     private TicketRepository ticketRespository;
 
-    public Ticket issueTicket(IssueTicketRequest ticketRequest) throws GateNotFoundException, ParkingLotNotFoundException, ParkingLotFullException {
+    public TicketService(GateRepository gateRepository, VehicleRepository vehicleRepository,
+                         ParkingLotRepository parkingLotRepository,
+                         TicketRepository ticketRespository) {
+        this.gateRepository = gateRepository;
+        this.vehicleRepository = vehicleRepository;
+        this.parkingLotRepository = parkingLotRepository;
+        this.ticketRespository = ticketRespository;
+
+    }
+
+    public Ticket issueTicket(IssueTicketRequest ticketRequest) throws GateNotFoundException,
+            ParkingLotNotFoundException, ParkingLotFullException {
 
         //set the time
         Ticket ticket = new Ticket();
@@ -33,25 +44,42 @@ public class TicketService {
         ticket.setEntryGate(gate);
 
         // set vehicle
-        Vehicle vehicle = vehicleRepository.getVehicleByNumber(ticketRequest.getVehicleNumber());
-        if(vehicle==null){
-            vehicle = new Vehicle(ticketRequest.getVehicleType(), ticketRequest.getOwnerName(), ticketRequest.getVehicleNumber());
-            vehicleRepository.save(vehicle);
-        }
+        Vehicle vehicle = getVehicleFromNumber(ticketRequest);
         ticket.setVehicle(vehicle);
 
         //get parkingLot
-        ParkingLot parkingLot = parkingLotRepository.getParkingLotById(ticketRequest.getParkingLotId());
-
-        AllotmentStrategy allotmentStrategy = parkingLot.getAllotmentStrategy();
-        AllotmentStrategy parkingAllotmentRule = AllotmentStrategyFactory.getParkingAllotmentStrategyForType(allotmentStrategy);
-
-        ParkingSlot parkingSlot = parkingAllotmentRule.getParkingSlot(ticketRequest.getVehicleType(), ticketRequest.getParkingLotId());
+        ParkingSlot parkingSlot = getParkingSlot(ticketRequest);
         ticket.setParkingSlot(parkingSlot);
+
         ticket.setNumber(ticketRequest.getOwnerName()+UUID.randomUUID());
 
         return ticketRespository.save(ticket);
 
+    }
+
+    private ParkingSlot getParkingSlot(IssueTicketRequest ticketRequest) throws
+            ParkingLotNotFoundException, ParkingLotFullException {
+        ParkingLot parkingLot = parkingLotRepository.getParkingLotById
+                (ticketRequest.getParkingLotId());
+
+        AllotmentStrategy allotmentStrategy = parkingLot.getAllotmentStrategy();
+        AllotmentStrategy parkingAllotmentRule = AllotmentStrategyFactory.
+                getParkingAllotmentStrategyForType(allotmentStrategy);
+
+        return parkingAllotmentRule.getParkingSlot(ticketRequest.getVehicleType(),
+                ticketRequest.getParkingLotId());
+    }
+
+    private Vehicle getVehicleFromNumber(IssueTicketRequest ticketRequest) {
+        Vehicle vehicle = vehicleRepository.getVehicleByNumber
+                (ticketRequest.getVehicleNumber());
+        if(vehicle==null){
+            vehicle = new Vehicle(ticketRequest.getVehicleType(),
+                    ticketRequest.getOwnerName(),
+                    ticketRequest.getVehicleNumber());
+            vehicleRepository.save(vehicle);
+        }
+        return vehicle;
     }
 
 }
